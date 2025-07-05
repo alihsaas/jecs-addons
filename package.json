@@ -4,7 +4,7 @@
 	"description": "",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/NormalDuck/feces-ts.git"
+		"url": "git+https://github.com/NormalDuck/jecs-addons.git"
 	},
 	"license": "MIT",
 	"main": "out/init.luau",
