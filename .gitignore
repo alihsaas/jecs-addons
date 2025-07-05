@@ -1,0 +1,10 @@
+*_packages
+.pesde
+
+.vscode
+sourcemap.json
+
+build
+
+node_modules
+out
