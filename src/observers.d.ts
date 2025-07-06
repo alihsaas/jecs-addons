@@ -9,5 +9,6 @@ interface PatchedWorld extends World {
     monitor(this: PatchedWorld, query: Query<unknown[]>, callback: (e: Entity, id: Id) => void): void;
 }
 
-type observer = (world: World) => PatchedWorld;
-export = observer;
+type Observers = (world: World) => PatchedWorld;
+declare const observers: Observers
+export = observers;
