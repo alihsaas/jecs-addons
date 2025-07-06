@@ -1,4 +1,8 @@
 import "./jecs";
-import observers from "./observers";
+import obs from "./observers";
+declare namespace JecsAddons {
+  type PatchedWorld = ReturnType<typeof obs>;
+  const observers: typeof obs;
+}
 
-export = observers;
+export = JecsAddons;
