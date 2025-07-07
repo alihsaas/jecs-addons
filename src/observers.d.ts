@@ -11,9 +11,6 @@ interface ObservableWorld extends World {
 
 type Observers = (world: World) => ObservableWorld;
 
-declare namespace Observer {
-    type PatchedWorld = ObservableWorld;
-    const observers: Observers;
-}
+declare const observers: Observers;
 
-export = Observer
+export = observers;
