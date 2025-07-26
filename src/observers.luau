@@ -22,28 +22,46 @@
 
 local jecs = require(script.Parent.jecs)
 
+export type Iter<T...> = (query: Query<T...>) -> () -> (jecs.Entity, T...)
+
+type Id<T=any> = jecs.Id<T>
+
+type Query<T...> = typeof(setmetatable(
+	{} :: {
+		iter: Iter<T...>,
+		with: (<a>(Query<T...>, Id<a>) -> Query<T...>)
+			& (<a, b>(Query<T...>, Id<a>, Id<b>) -> Query<T...>)
+			& (<a, b, c>(Query<T...>, Id<a>, Id<b>, Id<c>) -> Query<T...>)
+			& (<a, b, c>(Query<T...>, Id<a>, Id<b>, Id<c>) -> Query<T...>)
+			& (<a, b, c, d>(Query<T...>, Id<a>, Id<b>, Id<c>, Id) -> Query<T...>),
+		without: (<a>(Query<T...>, Id<a>) -> Query<T...>)
+			& (<a, b>(Query<T...>, Id<a>, Id<b>) -> Query<T...>)
+			& (<a, b, c>(Query<T...>, Id<a>, Id<b>, Id<c>) -> Query<T...>)
+			& (<a, b, c>(Query<T...>, Id<a>, Id<b>, Id<c>) -> Query<T...>)
+			& (<a, b, c, d>(Query<T...>, Id<a>, Id<b>, Id<c>, Id) -> Query<T...>),
+		archetypes: (self: Query<T...>) -> { jecs.Archetype },
+		cached: (self: Query<T...>) -> Query<T...>,
+	},
+	{} :: {
+		__iter: Iter<T...>,
+	}
+))
+
 export type PatchedWorld = jecs.World & {
 	added: <T>(PatchedWorld, jecs.Id<T>, <e>(e: jecs.Entity<e>, id: jecs.Id<T>, value: T?) -> ()) -> () -> (),
 	removed: <T>(PatchedWorld, jecs.Id<T>, (e: jecs.Entity, id: jecs.Id) -> ()) -> () -> (),
 	changed:  <T>(PatchedWorld, jecs.Id<T>, <e>(e: jecs.Entity<e>, id: jecs.Id<T>, value: T) -> ()) -> () -> (),
-	observer: <T...>(
-		PatchedWorld,
-		jecs.Query<T...>,
-		(<a>(jecs.Entity, jecs.Id<a>, a) -> ())?
-	) -> () -> (jecs.Entity),
-	monitor: (
-		PatchedWorld,
-		any,
-		(<a>(jecs.Entity, jecs.Id<a>) -> ())?
-	) -> ()
+	observer: <T...>(PatchedWorld, Query<T...>, callback: ((jecs.Entity, jecs.Id, any?) -> ())?) -> () -> () -> (jecs.Entity),
+	monitor: <T...>(PatchedWorld, Query<T...>, callback: ((jecs.Entity, jecs.Id, any?) -> ())?) -> () -> () -> (jecs.Entity)
 }
 
-local function observers_new(
+local function observers_new<T...>(
 	world: PatchedWorld,
-	query: any,
+	query: Query<T...>,
 	callback: (<T, a>(jecs.Entity<T>, jecs.Id<a>, value: a?) -> ())?
 )
 	query = query:cached()
+	callback = callback
 
 	local archetypes = {}
 	local terms = query.ids
@@ -67,8 +85,7 @@ local function observers_new(
 		id: jecs.Id<a>,
 		value: a?
 	)
-		local r = jecs.entity_index_try_get_fast(
-			entity_index, entity :: any) :: jecs.Record
+		local r = entity_index.sparse_array[jecs.ECS_ID(entity)]
 
 		local archetype = r.archetype
 
@@ -89,9 +106,9 @@ local function observers_new(
   	return function()
   		local row = i
   		return function()
-     			if row == 0 then
-         			i = 0
-          		table.clear(entities)
+ 			if row == 0 then
+     			i = 0
+	      		table.clear(entities)
       		end
            	local entity = entities[row]
            	row -= 1
