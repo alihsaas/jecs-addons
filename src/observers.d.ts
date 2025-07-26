@@ -19,9 +19,9 @@ interface ObservableWorld extends World {
      * @param callback - The function to call when an entity is changed.
      * @returns A function to unregister the callback.
      */
-    changed<T>(this: ObservableWorld, component: Id<T>, callback: (e: Entity, id: Id<T>, value?: T) => void): () => void;
-    observer<T extends unknown[]>(this: ObservableWorld, query: Query<T>, callback?: (e: Entity, c: Id, value?: any) => void): () => () => Entity;
-    monitor<T extends unknown[]>(this: ObservableWorld, query: Query<T>, callback?: (e: Entity, c: Id, value?: any) => void): () => () => Entity;
+    changed<T>(this: ObservableWorld, component: Id<T>, callback: (e: Entity, id: Id<T>, value: T) => void): () => void;
+    observer<T extends unknown[]>(this: ObservableWorld, query: Query<T>, callback?: (e: Entity, c: Id, value: any) => void): () => () => Entity;
+    monitor<T extends unknown[]>(this: ObservableWorld, query: Query<T>, callback?: (e: Entity, c: Id, value: any) => void): () => () => Entity;
 }
 
 type Observers = (world: World) => ObservableWorld;
