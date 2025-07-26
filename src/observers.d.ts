@@ -7,7 +7,7 @@ interface ObservableWorld extends World {
      * @param callback - The function to call when an entity is added.
      * @returns A function to unregister the callback.
      */
-    added<T>(this: ObservableWorld, component: Id<T>, callback: (e: Entity, id: Id<T>, value?: T) => void): () => void;
+    added<T>(this: ObservableWorld, component: Id<T>, callback: (e: Entity, id: Id<T>, value: T) => void): () => void;
     /**
      * Registers a callback for when an entity with the specified component is removed.
      * @param callback - The function to call when an entity is removed.
