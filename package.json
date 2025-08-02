@@ -1,6 +1,6 @@
 {
 	"name": "@rbxts/jecs-addons",
-	"version": "0.1.0-rc.11",
+	"version": "0.1.0-rc.12",
 	"description": "",
 	"repository": {
 		"type": "git",
@@ -18,7 +18,7 @@
 		"access": "public"
 	},
 	"peerDependencies": {
-		"@rbxts/jecs": "^0.6.0 || ^0.7.0 || ^0.8.0"
+		"@rbxts/jecs": "^0.9.0-rc.8"
 	},
 	"files": [
 		"out",
@@ -26,7 +26,7 @@
 	],
 	"devDependencies": {
 		"@rbxts/compiler-types": "3.0.0-types.0",
-		"@rbxts/types": "^1.0.811",
+		"@rbxts/types": "^1.0.866",
 		"@typescript-eslint/eslint-plugin": "^7.18.0",
 		"@typescript-eslint/parser": "^7.18.0",
 		"eslint": "^8.57.1",
